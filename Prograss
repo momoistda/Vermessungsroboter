@@ -1,0 +1,51 @@
+
+KW 16 
+
+1. Installed nav2, slam-toolbox, nav2-bringup
+
+----------------------------run---slam----to---save----a----map------------------
+https://emanual.robotis.com/docs/en/platform/turtlebot3/slam/#run-slam-node
+
+1. Run SLAM
+ export TURTLEBOT3_MODEL=burger
+ ros2 launch turtlebot3_cartographer cartographer.launch.py
+ 
+ 2. run teleoperation node to controll the robot
+ $ export TURTLEBOT3_MODEL=burger
+$ ros2 run turtlebot3_teleop teleop_keyboard
+
+3. configuration can be done via LUA file:
+   turtlebot3_cartographer/config/turtlebot3_lds_2d.lua 
+   
+4. save the map 
+ros2 run nav2_map_server map_saver_cli -f ~/map
+
+5. The map:
+  which is used for navigation. (white area is collision free area while black area is occupied and inaccessible area, and gray area represents the unknown area.)
+--------------------------------------------------------------------------------------
+-------------map.map-------------------map.yaml---------------saved-------------------
+
+
+
+
+--------------------run-----------navigation2------------------------------------------
+tried: $ ros2 launch turtlebot3_navigation2 navigation2.launch.py map:=$HOME/map.yaml
+
+https://emanual.robotis.com/docs/en/platform/turtlebot3/navigation/
+
+It is only worked the first time, after that, problem.
+-------------------so------try--------nav2_bringup---------------------------------------  
+6. run Nav2
+ros2 launch nav2_bringup bringup_launch.py use_sim_time:=False autostart:=False map:=/path/to/your-map.yaml
+
+7. run RVIZ
+ros2 run rviz2 rviz2 -d $(ros2 pkg prefix nav2_bringup)/share/nav2_bringup/rviz/nav2_default_view.rviz
+
+8. klick start and you will see the map
+
+9. Initialize the location of robi with 2D Pose Estimate
+  
+10. Send a Goal Pose using GoalTool button. 
+Once you define the target pose, Nav2 will find a global path and start navigating the robot on the map.
+
+
