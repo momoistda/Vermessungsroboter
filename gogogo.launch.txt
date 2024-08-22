@@ -1,0 +1,62 @@
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, LogInfo, TimerAction
+from launch_ros.actions import Node, PushRosNamespace
+from launch.substitutions import LaunchConfiguration
+
+def generate_launch_description():
+    return LaunchDescription([
+        # 1. 启动 nav2_bringup 的导航启动文件
+        Node(
+            package='nav2_bringup',
+            executable='navigation_launch.py',
+            output='screen',
+            name='nav2_bringup_navigation'
+        ),
+        
+        # 2. 启动 cartographer 的地图构建启动文件
+        Node(
+            package='turtlebot3_cartographer',
+            executable='cartographer.launch.py',
+            output='screen',
+            name='turtlebot3_cartographer'
+        ),
+        
+        # 3. 设置延迟启动 ziel_publisher 节点
+        TimerAction(
+            period=10.0,  # 等待10秒，确保前两个启动文件完全启动
+            actions=[
+                Node(
+                    package='my_robot_package',
+                    executable='ziel_publisher',
+                    name='ziel_publisher',
+                    output='screen'
+                )
+            ]
+        ),
+        
+        # 4. 设置延迟启动 ziel_sucher 节点
+        TimerAction(
+            period=15.0,  # 等待15秒，确保目标点发布后
+            actions=[
+                Node(
+                    package='my_robot_package',
+                    executable='ziel_sucher',
+                    name='ziel_sucher',
+                    output='screen'
+                )
+            ]
+        ),
+        
+        # 5. 设置延迟启动 goal_reached_checker 节点
+        TimerAction(
+            period=20.0,  # 等待20秒，确保目标点发布后
+            actions=[
+                Node(
+                    package='my_robot_package',
+                    executable='goal_reached_checker',
+                    name='goal_reached_checker',
+                    output='screen'
+                )
+            ]
+        ),
+    ])
