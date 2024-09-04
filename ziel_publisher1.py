@@ -25,6 +25,11 @@ class ZielPublisher(Node):
 
     def __init__(self):
         super().__init__('ziel_publisher')
+        self.goal_subscription = self.create_subscription(
+            Point,
+            '/goal_point',
+            self.goal_point_callback,
+            10)
         self.publisher_ = self.create_publisher(PoseStamped, 'goal_pose', 10)
         self.status_publisher_ = self.create_publisher(String, 'status', 10)
         self.subscription = self.create_subscription(PoseStamped, 'current_pose', self.pose_callback, 10)
@@ -38,6 +43,10 @@ class ZielPublisher(Node):
         self.w = 0.0
 
 
+    def goal_point_callback(self, msg):
+        self.x = msg.x
+        self.y = msg.y
+        self.get_logger().info(f'Received goal point: x = {self.x}, y = {self.y}')
     def pose_callback(self, msg):
         self.current_x = msg.pose.position.x
         self.current_y = msg.pose.position.y
@@ -64,11 +73,11 @@ def main(args=None):
     rclpy.init(args=args)
     ziel_publisher = ZielPublisher()
     # Set your goal coordinates
-    goal_x = 0.999
-    goal_y = 0.5
-    ziel_publisher.x = 0.0
-    ziel_publisher.y = 0.0
-    ziel_publisher.w = 0.5
+    #goal_x = 0.999
+    #goal_y = 0.5
+    #ziel_publisher.x = 0.0
+    #ziel_publisher.y = 0.0
+    #ziel_publisher.w = 0.5
     #ziel_publisher.publish_goal_pose()
 
     ziel_publisher.publish_progress()  # Publish initial progress
