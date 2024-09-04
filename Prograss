@@ -1,3 +1,21 @@
+04/09
+
+export ROS_DOMAIN_ID=50
+ros2 launch nav2_bringup navigation_launch.py
+ros2 launch turtlebot3_cartographer cartographer.launch.py
+
+
+#colcon build --packages-select RP_pubsub
+source install/setup.bash
+ros2 run RP_pubsub goal_pub 
+ros2 run RP_pubsub ziel_sucher
+
+Problem:
+goal_pub und ziel_sucher, both worked but, 
+robi fährt immer hin und her zurück. warum?
+---------------------------------------------------------------------------------------------
+
+
 KW18-19:
 successful with command:
 
