@@ -34,7 +34,7 @@ class ZielSucher(Node):
     def goal_reached_callback(self, msg):
         if msg.data:
             self.get_logger().info('Goal has been reached. Searching for the next unknown point.')
-            self.waiting_for_goal_reached = False  # 准备发布下一个目标点
+            self.waiting_for_goal_reached = False  # prepared to send next goal point
 
     def find_unknown_points(self, map_data):
         unknown_points = []
@@ -47,14 +47,14 @@ class ZielSucher(Node):
         for i in range(height):
             for j in range(width):
                 index = i * width + j
-                if map_data.data[index] == -1:  # -1 表示未知区域
+                if map_data.data[index] == -1:  # -1 unknow environment
                     x = origin_x + j * resolution
                     y = origin_y + i * resolution
                     unknown_points.append((x, y))
         return unknown_points
 
     def find_nearest_point(self, unknown_points):
-        robot_position = (0, 0)  # 假设当前位置是 (0, 0)；根据需要获取实际的机器人位置
+        robot_position = (0, 0)  # Annahme der Standpunkt ist (0, 0)；and obtein the currant position of the robi
         nearest_point = min(unknown_points, key=lambda point: self.euclidean_distance(point, robot_position))
         return nearest_point
 
@@ -65,7 +65,7 @@ class ZielSucher(Node):
         goal_point_msg = Point()
         goal_point_msg.x = point[0]
         goal_point_msg.y = point[1]
-        goal_point_msg.z = 0.0  # 假设在2D平面上，z坐标为0
+        goal_point_msg.z = 0.0  # 2D, z=0
         self.publisher_.publish(goal_point_msg)
         self.get_logger().info(f'Publishing goal point: ({goal_point_msg.x}, {goal_point_msg.y})')
 
